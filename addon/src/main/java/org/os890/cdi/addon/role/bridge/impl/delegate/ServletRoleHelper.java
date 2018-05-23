@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.os890.cdi.addon.role.bridge.impl;
+package org.os890.cdi.addon.role.bridge.impl.delegate;
 
 import org.apache.deltaspike.core.api.literal.DeltaSpikeLiteral;
 

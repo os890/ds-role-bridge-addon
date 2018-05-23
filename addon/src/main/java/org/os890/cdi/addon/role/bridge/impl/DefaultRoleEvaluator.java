@@ -19,6 +19,8 @@
 package org.os890.cdi.addon.role.bridge.impl;
 
 import org.apache.deltaspike.core.util.ClassUtils;
+import org.os890.cdi.addon.role.bridge.impl.delegate.EjbRoleHelper;
+import org.os890.cdi.addon.role.bridge.impl.delegate.ServletRoleHelper;
 import org.os890.cdi.addon.role.bridge.spi.RoleEvaluator;
 
 import javax.annotation.PostConstruct;
