@@ -25,6 +25,7 @@ import org.os890.cdi.addon.role.bridge.spi.RoleEvaluator;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import static org.apache.deltaspike.core.api.provider.BeanProvider.getContextualReference;
 
@@ -38,6 +39,9 @@ public class DefaultRoleEvaluator implements RoleEvaluator
     private Class<?> servletRequestClass;
     private Class<?> ejbContextClass;
 
+    @Inject
+    private RunAsRoleStorage runAsRoleStorage;
+
     @PostConstruct
     protected void init()
     {
@@ -48,11 +52,21 @@ public class DefaultRoleEvaluator implements RoleEvaluator
     @Override
     public boolean isUserInRole(String roleName)
     {
+        if (runAsRoleStorage.isInRunAsRole(roleName))
+        {
+            return true;
+        }
+
         Boolean result = tryToCheckForRequest(roleName);
 
-        if (result == null)
+        if (!Boolean.TRUE.equals(result)) //also check it in case of false, because it could be a @RunAs execution from an ejb
         {
-            result = tryToCheckInEjbContext(roleName);
+            Boolean ejbResult = tryToCheckInEjbContext(roleName);
+
+            if (ejbResult != null)
+            {
+                result = ejbResult; //just override the initial result if there was an ejb-context check at all
+            }
         }
 
         if (result == null)

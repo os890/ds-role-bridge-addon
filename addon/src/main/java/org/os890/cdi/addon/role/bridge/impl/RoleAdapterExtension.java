@@ -23,13 +23,16 @@ import org.apache.deltaspike.core.util.ClassDeactivationUtils;
 import org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder;
 import org.os890.cdi.addon.role.bridge.impl.interceptor.RoleClassAdapterInterceptorBinding;
 import org.os890.cdi.addon.role.bridge.impl.interceptor.RoleMethodAdapterInterceptorBinding;
+import org.os890.cdi.addon.role.bridge.impl.interceptor.RunAsInterceptorBinding;
 
+import javax.annotation.security.RunAs;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -70,6 +73,9 @@ public class RoleAdapterExtension implements Extension, Deactivatable
         AnnotatedTypeBuilder<X> annotatedTypeBuilder =
             new AnnotatedTypeBuilder<X>().readFromType(pat.getAnnotatedType());
 
+        boolean classLevelRoleInterceptorAdded = false;
+        boolean patChanged = false;
+
         for (Annotation annotation : beanClass.getDeclaredAnnotations())
         {
             Class<?> annotationClass = annotation.annotationType();
@@ -80,29 +86,50 @@ public class RoleAdapterExtension implements Extension, Deactivatable
                 return;
             }
 
-            if (roleAnnotationClasses.contains(annotationClass))
+            if (RunAs.class.equals(annotationClass))
+            {
+                annotatedTypeBuilder.addToClass(RunAsInterceptorBinding.INSTANCE);
+                patChanged = true;
+            }
+
+            if (!classLevelRoleInterceptorAdded && roleAnnotationClasses.contains(annotationClass))
             {
                 annotatedTypeBuilder.addToClass(RoleClassAdapterInterceptorBinding.INSTANCE);
-                pat.setAnnotatedType(annotatedTypeBuilder.create());
-                //only add the class-level interceptor (it will also inspect the methods)
-                return;
+                classLevelRoleInterceptorAdded = true;
+                patChanged = true;
             }
         }
 
-        //only add method-level interceptors (if needed) to improve the performance for the remaining methods
-        for (Method method : beanClass.getDeclaredMethods())
+        if (!classLevelRoleInterceptorAdded)
         {
-            for (Annotation annotation : method.getDeclaredAnnotations())
+            //only add method-level interceptors (if needed) to improve the performance for the remaining methods
+            for (Method method : beanClass.getDeclaredMethods())
             {
-                Class<?> annotationClass = annotation.annotationType();
-
-                if (roleAnnotationClasses.contains(annotationClass))
+                if (!Modifier.isPublic(method.getModifiers()) ||
+                    Modifier.isFinal(method.getModifiers()) ||
+                    Modifier.isAbstract(method.getModifiers()) ||
+                    Modifier.isStatic(method.getModifiers()))
                 {
-                    annotatedTypeBuilder.addToMethod(method, RoleMethodAdapterInterceptorBinding.INSTANCE);
-                    pat.setAnnotatedType(annotatedTypeBuilder.create());
-                    break; //continue with the next method
+                    continue;
+                }
+
+                for (Annotation annotation : method.getDeclaredAnnotations())
+                {
+                    Class<?> annotationClass = annotation.annotationType();
+
+                    if (roleAnnotationClasses.contains(annotationClass))
+                    {
+                        annotatedTypeBuilder.addToMethod(method, RoleMethodAdapterInterceptorBinding.INSTANCE);
+                        patChanged = true;
+                        break; //continue with the next method
+                    }
                 }
             }
+        }
+
+        if (patChanged)
+        {
+            pat.setAnnotatedType(annotatedTypeBuilder.create());
         }
     }
 }
