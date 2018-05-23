@@ -29,7 +29,7 @@ public class EjbRoleHelper
     @Resource
     private EJBContext ejbContext;
 
-    public boolean isUserInRole(String roleName)
+    public Boolean isUserInRole(String roleName)
     {
         return ejbContext.isCallerInRole(roleName);
     }

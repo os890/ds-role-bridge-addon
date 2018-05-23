@@ -18,14 +18,11 @@
  */
 package org.os890.cdi.addon.role.bridge.impl;
 
-import org.apache.deltaspike.core.api.literal.DeltaSpikeLiteral;
 import org.apache.deltaspike.core.util.ClassUtils;
 import org.os890.cdi.addon.role.bridge.spi.RoleEvaluator;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.servlet.http.HttpServletRequest;
 
 import static org.apache.deltaspike.core.api.provider.BeanProvider.getContextualReference;
 
@@ -71,24 +68,7 @@ public class DefaultRoleEvaluator implements RoleEvaluator
             return null;
         }
 
-        HttpServletRequest servletRequest = getContextualReference(HttpServletRequest.class, true);
-        if (servletRequest == null)
-        {
-            servletRequest = getContextualReference(HttpServletRequest.class, true, new DeltaSpikeLiteral());
-        }
-
-        try
-        {
-            if (servletRequest != null)
-            {
-                return servletRequest.isUserInRole(roleName);
-            }
-        }
-        catch (ContextNotActiveException e)
-        {
-            //do nothing - it was just a try -> next step is the fallback to the ejb-(context-)helper
-        }
-        return null;
+        return getContextualReference(ServletRoleHelper.class).isUserInRole(roleName);
     }
 
     private Boolean tryToCheckInEjbContext(String roleName)
