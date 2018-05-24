@@ -25,14 +25,12 @@
     <packaging>pom</packaging>
 
     <groupId>org.os890.cdi.addon</groupId>
-    <artifactId>ds-ee-role-bridge-addon-project</artifactId>
+    <artifactId>ds-ee-role-bridge-addon-examples-project</artifactId>
 
-    <name>DeltaSpike EE-Role Bridge Add-on Project</name>
+    <name>DeltaSpike EE-Role Bridge Examples Project</name>
     <version>1.0.0</version>
 
     <modules>
-        <module>addon</module>
-        <module>examples</module>
+        <module>servlet-demo</module>
     </modules>
-
 </project>
