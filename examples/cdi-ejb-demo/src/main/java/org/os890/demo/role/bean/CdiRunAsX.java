@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 @RunAs("x")
-public class CdiRunAs implements SimpleBean
+public class CdiRunAsX implements SimpleBean
 {
     @Inject
     private CdiRestrictToX restrictToX;
