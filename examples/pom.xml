@@ -31,6 +31,6 @@
     <version>1.0.0</version>
 
     <modules>
-        <module>servlet-demo</module>
+        <module>cdi-servlet-demo</module>
     </modules>
 </project>
