@@ -28,8 +28,11 @@ public class RunAsRoleStorage
 
     public boolean isInRunAsRole(String roleName)
     {
-        Stack<String> runAsRoleSet = RUN_AS_ROLE_STACK.get();
-        return runAsRoleSet != null && runAsRoleSet.contains(roleName);
+        Stack<String> runAsRoleStack = RUN_AS_ROLE_STACK.get();
+        return runAsRoleStack != null && !runAsRoleStack.isEmpty() && roleName.equals(runAsRoleStack.peek());
+
+        //use the following to aggregate roles in case of nested @RunAs cases (instead of a context-switch)
+        //return runAsRoleStack != null && runAsRoleStack.contains(roleName);
     }
 
     public void addRoles(String roleName)
