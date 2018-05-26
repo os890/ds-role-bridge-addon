@@ -23,7 +23,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 @Dependent
-@ApplicationPath("demo")
+@ApplicationPath("cdi/demo")
 public class DemoApplication extends Application
 {
 }

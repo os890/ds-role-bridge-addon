@@ -22,16 +22,29 @@ import org.apache.meecrowave.Meecrowave;
 
 //use e.g.:
 
-//http://localhost:8080/demo/overview
+//http://localhost:8080/cdi/demo/overview
 //... for demo-user without roles
 
-//http://localhost:8080/demo/overview?testWithGroups=x
+//http://localhost:8080/cdi/demo/overviewRoleX
+//... for demo-user with role 'x' (via @RunAs)
+
+//http://localhost:8080/cdi/demo/overviewRoleY
+//... for demo-user with role 'y' (via @RunAs)
+
+//http://localhost:8080/cdi/demo/overviewRoleZ
+//... for demo-user with role 'z' (via @RunAs)
+
+
+
+//for testing users with different-roles (without restarts and without @RunWith):
+
+//http://localhost:8080/cdi/demo/overview?testWithGroups=x
 //... for demo-user with role 'x'
 
-//http://localhost:8080/demo/overview?testWithGroups=x,y
+//http://localhost:8080/cdi/demo/overview?testWithGroups=x,y
 //... for demo-user with role 'x' and 'y'
 
-//http://localhost:8080/demo/overview?testWithGroups=z
+//http://localhost:8080/cdi/demo/overview?testWithGroups=z
 //... for demo-user with role 'z'
 public class DynamicRoleTestStarter
 {
