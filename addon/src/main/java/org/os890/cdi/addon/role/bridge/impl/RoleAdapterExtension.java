@@ -75,15 +75,21 @@ public class RoleAdapterExtension implements Extension, Deactivatable
 
         boolean classLevelRoleInterceptorAdded = false;
         boolean patChanged = false;
+        boolean isEjb = isEjbClass(beanClass);
 
         for (Annotation annotation : beanClass.getDeclaredAnnotations())
         {
             Class<?> annotationClass = annotation.annotationType();
-            String annotationName = annotationClass.getName();
 
-            if (annotationName.startsWith(EJB_PACKAGE_NAME))
+            if (isEjb)
             {
-                return;
+                if (RunAs.class.equals(annotationClass))
+                {
+                    annotatedTypeBuilder.addToClass(RunAsInterceptorBinding.INSTANCE);
+                    pat.setAnnotatedType(annotatedTypeBuilder.create());
+                    return; //in case of EJBs we just check for @RunAs to propagate the info to the CDI context
+                }
+                continue;
             }
 
             if (RunAs.class.equals(annotationClass))
@@ -98,6 +104,11 @@ public class RoleAdapterExtension implements Extension, Deactivatable
                 classLevelRoleInterceptorAdded = true;
                 patChanged = true;
             }
+        }
+
+        if (isEjb)
+        {
+            return; //we just need @RunWith from EJBs which is limited to the class-level
         }
 
         if (!classLevelRoleInterceptorAdded)
@@ -131,5 +142,20 @@ public class RoleAdapterExtension implements Extension, Deactivatable
         {
             pat.setAnnotatedType(annotatedTypeBuilder.create());
         }
+    }
+
+    private boolean isEjbClass(Class<?> beanClass)
+    {
+        for (Annotation annotation : beanClass.getDeclaredAnnotations())
+        {
+            Class<?> annotationClass = annotation.annotationType();
+            String annotationName = annotationClass.getName();
+
+            if (annotationName.startsWith(EJB_PACKAGE_NAME))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

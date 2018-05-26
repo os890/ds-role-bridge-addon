@@ -52,21 +52,17 @@ public class DefaultRoleEvaluator implements RoleEvaluator
     @Override
     public boolean isUserInRole(String roleName)
     {
-        if (runAsRoleStorage.isInRunAsRole(roleName))
+        //a @RunAs call is a forced context-switch - here we are aware of @RunAs triggered by EJBs as well as CDI-Beans
+        if (runAsRoleStorage.isRunAsCall())
         {
-            return true;
+            return runAsRoleStorage.isInRunAsRole(roleName);
         }
 
         Boolean result = tryToCheckForRequest(roleName);
 
-        if (!Boolean.TRUE.equals(result)) //also check it in case of false, because it could be a @RunAs execution from an ejb
+        if (result == null)
         {
-            Boolean ejbResult = tryToCheckInEjbContext(roleName);
-
-            if (ejbResult != null)
-            {
-                result = ejbResult; //just override the initial result if there was an ejb-context check at all
-            }
+            result = tryToCheckInEjbContext(roleName);
         }
 
         if (result == null)

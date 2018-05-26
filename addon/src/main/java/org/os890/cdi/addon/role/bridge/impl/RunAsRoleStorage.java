@@ -26,6 +26,12 @@ public class RunAsRoleStorage
 {
     private static final ThreadLocal<Stack<String>> RUN_AS_ROLE_STACK = new ThreadLocal<>();
 
+    public boolean isRunAsCall()
+    {
+        Stack<String> runAsRoleStack = RUN_AS_ROLE_STACK.get();
+        return runAsRoleStack != null && !runAsRoleStack.isEmpty();
+    }
+
     public boolean isInRunAsRole(String roleName)
     {
         Stack<String> runAsRoleStack = RUN_AS_ROLE_STACK.get();
