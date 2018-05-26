@@ -32,7 +32,7 @@ public abstract class DemoBaseResource
         result.append("protected by role x: ").append(getValueFrom(restrictToX)).append(SEPARATOR);
         result.append("protected by role y: ").append(getValueFrom(restrictToY)).append(SEPARATOR);
         result.append(SEPARATOR);
-        result.append("run-as x: ").append(getValueFrom(cdiRunAsX)).append(SEPARATOR);
+        result.append("run-as: ").append(getValueFrom(cdiRunAsX)).append(SEPARATOR);
         return "answer: " + result.toString();
     }
 
