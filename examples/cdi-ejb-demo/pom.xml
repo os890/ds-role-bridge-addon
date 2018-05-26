@@ -24,9 +24,9 @@
     <packaging>war</packaging>
 
     <groupId>org.os890.cdi.addon</groupId>
-    <artifactId>ds-ee-role-bridge_ejb-example</artifactId>
+    <artifactId>ds-ee-role-bridge_cdi-ejb-example</artifactId>
 
-    <name>DeltaSpike EE-Role Bridge EJB-Example</name>
+    <name>DeltaSpike EE-Role Bridge CDI-EJB-Example</name>
     <version>1.0.0</version>
 
     <properties>
