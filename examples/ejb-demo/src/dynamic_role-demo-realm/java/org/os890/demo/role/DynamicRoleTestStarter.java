@@ -27,16 +27,16 @@ import org.wildfly.swarm.undertow.WARArchive;
 
 //use e.g.:
 
-//http://localhost:8080/ejb-demo/demo/overview
+//http://localhost:8080/ejb/demo/overview
 //... for demo-user without roles
 
-//http://localhost:8080/ejb-demo/demo/overviewRoleX
+//http://localhost:8080/ejb/demo/overviewRoleX
 //... for demo-user with role 'x' (via @RunAs)
 
-//http://localhost:8080/ejb-demo/demo/overviewRoleY
+//http://localhost:8080/ejb/demo/overviewRoleY
 //... for demo-user with role 'y' (via @RunAs)
 
-//http://localhost:8080/ejb-demo/demo/overviewRoleZ
+//http://localhost:8080/ejb/demo/overviewRoleZ
 //... for demo-user with role 'z' (via @RunAs)
 public class DynamicRoleTestStarter {
     public static void main(String[] args) throws Exception {
@@ -50,7 +50,7 @@ public class DynamicRoleTestStarter {
 
         container.start();
 
-        WARArchive warArchive = container.createDefaultDeployment().as(WARArchive.class).setContextRoot("ejb-demo");
+        WARArchive warArchive = container.createDefaultDeployment().as(WARArchive.class).setContextRoot("ejb");
         container.deploy(warArchive);
     }
 }
