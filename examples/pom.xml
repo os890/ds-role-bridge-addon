@@ -33,5 +33,6 @@
     <modules>
         <module>cdi-servlet-demo</module>
         <module>cdi-ejb-demo</module>
+        <module>ejb-demo</module>
     </modules>
 </project>
